@@ -5,6 +5,8 @@ from flask import session
 app = Flask(__name__)
 app.secret_key = b'314159'
 rijec_dict = {}
+slova_dict = {}
+zivoti_dict = {}
 # r_d = {"a":"7", "g":"5"}
 # x = r_d.get("a") --> "7"
 # x = r_d.get("z") --> None
@@ -38,17 +40,41 @@ def logout():
     return redirect(url_for('hello_world'))
 
 
-@app.route("/nova-igra")
+@app.route("/nova-igra", methods=['GET', 'POST'])
 def nova_igra():
-    global rijec_dict
     username = session.get("username")
     if not username:
         return redirect(url_for('hello_world'))
-    if r := rijec_dict.get(username):
-        return r
-    else:
+
+    global slova_dict, rijec_dict, zivoti_dict
+    d = None
+    if request.method == "GET":
+        slova_dict[username] = set(" ")
         rijec_dict[username] = get_word()
-        return rijec_dict.get(username)
+        zivoti_dict[username] = 10
+
+    if request.method == 'POST' and request.form['slovo']:
+        d = request.form['slovo'].lower()
+        slova_dict.get(username).add(d[0])
+    n = ""
+
+    rijec = rijec_dict.get(username)
+
+    for a in rijec:
+        if a.isspace() == True:
+            n += "⨼ "
+        elif a in slova_dict.get(username):
+            n += f"{a} "
+        else:
+            n += "_ "
+
+    if d != None and d not in rijec:
+        zivoti_dict[username] = zivoti_dict.get(username) - 1
+
+    x = ", ".join(slova_dict.get(username))
+    pobjeda = "_" not in n
+
+    return render_template("nova_igra.html", rijec=rijec, displej=n, z=zivoti_dict.get(username), x=x, pobjeda=pobjeda)
 
 
 def get_word():
@@ -60,4 +86,6 @@ def get_word():
     else:
         print("Error:", response.status_code, response.text)
         return "error"
+
+
 
