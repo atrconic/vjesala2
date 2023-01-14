@@ -8,6 +8,16 @@
 <body>
     <div class="container">
         <h4>Welcome to hangman!</h4>
+        {% if username %}
+        <div>
+<!--            <a href="/nova-igra">start a new game</a>-->
+        </div>
+        <div>
+            <a href="/logout">log out</a>
+        </div>
+        {% else %}
+        <a href="/login">log in</a>
+        {% endif %}
     </div>
 </body>
 </html>
