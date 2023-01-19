@@ -3,10 +3,12 @@ import requests
 from flask import session
 
 app = Flask(__name__)
-app.secret_key = b'314159'
+app.secret_key = b'314159260'
 rijec_dict = {}
 slova_dict = {}
 zivoti_dict = {}
+tries_count_dict = {}  # broj pokusaja
+win_count_dict = {}  # broj pobjeda
 # r_d = {"a":"7", "g":"5"}
 # x = r_d.get("a") --> "7"
 # x = r_d.get("z") --> None
@@ -46,12 +48,16 @@ def nova_igra():
     if not username:
         return redirect(url_for('hello_world'))
 
-    global slova_dict, rijec_dict, zivoti_dict
+    global slova_dict, rijec_dict, zivoti_dict, tries_count_dict
     d = None
     if request.method == "GET":
         slova_dict[username] = set(" ")
         rijec_dict[username] = get_word()
         zivoti_dict[username] = 10
+        if odigrano := tries_count_dict.get(username):
+            tries_count_dict[username] = odigrano + 1
+        else:
+            tries_count_dict[username] = 1
 
     if request.method == 'POST' and request.form['slovo']:
         d = request.form['slovo'].lower()
@@ -74,7 +80,14 @@ def nova_igra():
     x = ", ".join(slova_dict.get(username))
     pobjeda = "_" not in n
 
-    return render_template("nova_igra.html", rijec=rijec, displej=n, z=zivoti_dict.get(username), x=x, pobjeda=pobjeda)
+    if pobjeda == True:
+        if pobjede := win_count_dict.get(username):
+            win_count_dict[username] = pobjede + 1
+        else:
+            win_count_dict[username] = 1
+
+    print(tries_count_dict)
+    return render_template("nova_igra.html", rijec=rijec, displej=n, z=zivoti_dict.get(username), x=x, pobjeda=pobjeda, tries_count_dict=tries_count_dict, win_count_dict=win_count_dict)
 
 
 def get_word():
