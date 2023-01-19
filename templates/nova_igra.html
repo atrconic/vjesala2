@@ -8,10 +8,10 @@
 <body>
   <h4>Nova igra!</h4>
   <p>pokusaj pogoditi</p>
-  <p>{{ displej }}</p>
-  <p>koristena slova: {{ x }}</p>
-  <p>preostalo zivota: {{ z }} </p>
-  {% if z > 0 and pobjeda == False %}
+  <p>{{ context.get("displej") }}</p>
+  <p>koristena slova: {{ context.get("x") }}</p>
+  <p>preostalo zivota: {{ context.get("z") }} </p>
+  {% if context.get("z") > 0 and context.get("pobjeda") == False %}
   <form method="post" action="/nova-igra">
       <input type="text" name="slovo" placeholder="upiši slovo">
       <input type="submit">
@@ -19,12 +19,12 @@
   <a href="/">odustani</a>
   {% else %}
     <h4>Kraj igre!</h4>
-    <h4>Trazila se rijec {{ rijec }}.</h4>
+    <h4>Trazila se rijec {{ context.get("rijec") }}.</h4>
     <a href="/nova-igra">nova igra</a>
   {% endif %}
    <h5>hall of fame:</h5>
-        {% for username in tries_count_dict %}
-            <div>{{ username }}: {{ win_count_dict.get(username, 0) }}/{{ tries_count_dict.get(username, 0) }}</div>
+        {% for username in context.get("tries_count_dict") %}
+            <div>{{ username }}: {{ context.get("win_count_dict").get(username, 0) }}/{{ context.get("tries_count_dict").get(username, 0) }}</div>
         {% endfor %}
 
 </body>

@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import requests
 from flask import session
 
+
 app = Flask(__name__)
 app.secret_key = b'314159260'
 rijec_dict = {}
@@ -86,8 +87,17 @@ def nova_igra():
         else:
             win_count_dict[username] = 1
 
-    print(tries_count_dict)
-    return render_template("nova_igra.html", rijec=rijec, displej=n, z=zivoti_dict.get(username), x=x, pobjeda=pobjeda, tries_count_dict=tries_count_dict, win_count_dict=win_count_dict)
+    # print(tries_count_dict)
+    context = {
+        "rijec": rijec,
+        "displej": n,
+        "z": zivoti_dict.get(username),
+        "x": x,
+        "pobjeda": pobjeda,
+        "tries_count_dict": tries_count_dict,
+        "win_count_dict": win_count_dict,
+    }
+    return render_template("nova_igra.html", context=context)
 
 
 def get_word():
