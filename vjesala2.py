@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import requests
 from flask import session
-
+import string
 
 app = Flask(__name__)
 app.secret_key = b'314159260'
@@ -87,6 +87,7 @@ def nova_igra():
         else:
             win_count_dict[username] = 1
 
+    alphabet = list(string.ascii_uppercase)
     # print(tries_count_dict)
     context = {
         "rijec": rijec,
@@ -96,6 +97,7 @@ def nova_igra():
         "pobjeda": pobjeda,
         "tries_count_dict": tries_count_dict,
         "win_count_dict": win_count_dict,
+        "alphabet": alphabet,
     }
     return render_template("nova_igra.html", context=context)
 
